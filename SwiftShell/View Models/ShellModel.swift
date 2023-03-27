@@ -22,7 +22,7 @@ class ShellModel: ObservableObject {
         // Create process
         let task = Process()
         task.executableURL = URL(fileURLWithPath: "/bin/zsh")
-        task.arguments = ["-c", "script -q /dev/null \(command)"]
+        task.arguments = ["-c", "script -q /dev/null \(command)"] // Remove buffer
 
         // Read input and inject to process
         let pipe = Pipe()
@@ -38,7 +38,7 @@ class ShellModel: ObservableObject {
             }
         }
         
-        // Read process output
+        // Read process output and append to shellOutput
         shellOutputPipe = Pipe()
         task.standardOutput = shellOutputPipe
         task.standardError = shellOutputPipe
