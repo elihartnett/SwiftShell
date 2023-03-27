@@ -29,7 +29,7 @@ struct ContentView: View {
             }
             
             HStack {
-                TextField("input", text: $model.shellInput)
+                TextField("Input", text: $model.shellInput)
                     .onSubmit {
                         submitInput()
                     }
@@ -51,6 +51,9 @@ struct ContentView: View {
                     try  model.shellInputPipe.fileHandleForWriting.write(contentsOf: model.shellInput.data(using: .utf8)!)
                 }
                 else {
+                    DispatchQueue.main.async {
+                        model.shellOutput.append(ShellOutput(index: model.shellOutput.count, output: "~ \(model.shellInput)"))
+                    }
                     try? model.safeAsyncShell(model.shellInput)
                 }
             }

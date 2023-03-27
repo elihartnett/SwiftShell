@@ -19,27 +19,10 @@ class ShellModel: ObservableObject {
     func safeAsyncShell(_ command: String) throws {
         asyncShellIsRunning = true
         
-        shellOutputPipe = Pipe()
-        shellOutputPipe.fileHandleForReading.readabilityHandler = { handle in
-            do {
-                if let decodedData = try self.decodeData(data: handle.availableData) {
-                    DispatchQueue.main.async {
-                        self.shellOutput.append(ShellOutput(index: self.shellOutput.count, output: decodedData))
-                        self.resetInput()
-                    }
-                }
-            }
-            catch {
-                self.handleError(error: error)
-            }
-        }
-        
         let task = Process()
         task.executableURL = URL(fileURLWithPath: "/bin/zsh")
-        task.arguments = ["-c", command]
-        task.standardOutput = shellOutputPipe
-        task.standardError = shellOutputPipe
-        
+        task.arguments = ["-c", "script -q /dev/null \(command)"] // Use script to disable buffering
+
         let pipe = Pipe()
         task.standardInput = pipe
         shellInputPipe.fileHandleForReading.readabilityHandler = { handle in
@@ -53,9 +36,37 @@ class ShellModel: ObservableObject {
             }
         }
         
+        shellOutputPipe = Pipe()
+        task.standardOutput = shellOutputPipe
+        task.standardError = shellOutputPipe
+        shellOutputPipe.fileHandleForReading.readabilityHandler = { handle in
+            do {
+                let availableData = handle.availableData
+                if availableData.isEmpty {
+                    // Close the file handle and set the asyncShellIsRunning flag to false
+                    try handle.close()
+                    DispatchQueue.main.async {
+                        self.asyncShellIsRunning = false
+                    }
+                } else if let decodedData = try self.decodeData(data: availableData) {
+                    DispatchQueue.main.async {
+                        self.shellOutput.append(ShellOutput(index: self.shellOutput.count, output: decodedData))
+                        self.resetInput()
+                    }
+                }
+            }
+            catch {
+                self.handleError(error: error)
+            }
+        }
+        
         var environment = ProcessInfo.processInfo.environment
         if environment.keys.contains("OS_ACTIVITY_DT_MODE") {
             environment["OS_ACTIVITY_DT_MODE"] = nil
+            task.environment = environment
+        }
+        if environment.keys.contains("NSUnbufferedIO") {
+            environment["NSUnbufferedIO"] = "YES"
             task.environment = environment
         }
         
