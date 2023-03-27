@@ -19,10 +19,12 @@ class ShellModel: ObservableObject {
     func safeAsyncShell(_ command: String) throws {
         asyncShellIsRunning = true
         
+        // Create process
         let task = Process()
         task.executableURL = URL(fileURLWithPath: "/bin/zsh")
-        task.arguments = ["-c", "script -q /dev/null \(command)"] // Use script to disable buffering
+        task.arguments = ["-c", "script -q /dev/null \(command)"]
 
+        // Read input and inject to process
         let pipe = Pipe()
         task.standardInput = pipe
         shellInputPipe.fileHandleForReading.readabilityHandler = { handle in
@@ -36,19 +38,13 @@ class ShellModel: ObservableObject {
             }
         }
         
+        // Read process output
         shellOutputPipe = Pipe()
         task.standardOutput = shellOutputPipe
         task.standardError = shellOutputPipe
         shellOutputPipe.fileHandleForReading.readabilityHandler = { handle in
             do {
-                let availableData = handle.availableData
-                if availableData.isEmpty {
-                    // Close the file handle and set the asyncShellIsRunning flag to false
-                    try handle.close()
-                    DispatchQueue.main.async {
-                        self.asyncShellIsRunning = false
-                    }
-                } else if let decodedData = try self.decodeData(data: availableData) {
+                if let decodedData = try self.decodeData(data: handle.availableData) {
                     DispatchQueue.main.async {
                         self.shellOutput.append(ShellOutput(index: self.shellOutput.count, output: decodedData))
                         self.resetInput()
@@ -60,16 +56,14 @@ class ShellModel: ObservableObject {
             }
         }
         
+        // Remove log noise
         var environment = ProcessInfo.processInfo.environment
         if environment.keys.contains("OS_ACTIVITY_DT_MODE") {
             environment["OS_ACTIVITY_DT_MODE"] = nil
             task.environment = environment
         }
-        if environment.keys.contains("NSUnbufferedIO") {
-            environment["NSUnbufferedIO"] = "YES"
-            task.environment = environment
-        }
         
+        // Run process
         try task.run()
         task.waitUntilExit()
         
