@@ -6,10 +6,8 @@
 //
 
 import Foundation
-/*
+
  print("Enter some input: ", terminator: "")
  if let input = readLine() {
      print("You entered: \(input)")
  }
-
- */

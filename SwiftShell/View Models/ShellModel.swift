@@ -72,7 +72,10 @@ class ShellModel: ObservableObject {
             asyncShellIsRunning = false
             return
         }
-        else { throw SwiftShellError.exitFailureError(command: command) }
+        else {
+            asyncShellIsRunning = false
+            throw SwiftShellError.exitFailureError(command: command)
+        }
     }
     
     @discardableResult
@@ -128,5 +131,25 @@ class ShellModel: ObservableObject {
                 print("Data: \(data)")
             }
         }
+    }
+    
+    func printLoadingSpinner() {
+        let chars = ["-", #"\"#, #"|"#, #"/"#]
+        Task {
+            var count = 0
+            while true {
+                let index = count % chars.count
+                if shellOutput.isEmpty {
+                    shellOutput.append(ShellOutput(index: 0, output: ""))
+                }
+                shellOutput[0].output = "\u{1B}[1A\u{1B}[K\(chars[index])"
+                count += 1
+                try await delay(seconds: 0.1)
+            }
+        }
+    }
+    
+    func delay(seconds: Double) async throws {
+        try await Task.sleep(nanoseconds: UInt64(seconds * Double(NSEC_PER_SEC)))
     }
 }

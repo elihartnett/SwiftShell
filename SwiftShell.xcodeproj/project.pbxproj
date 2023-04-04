@@ -14,7 +14,6 @@
 		6268F5B029CE60E0004E3170 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6268F5AF29CE60E0004E3170 /* Preview Assets.xcassets */; };
 		6268F5BA29CE6117004E3170 /* ShellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6268F5B929CE6117004E3170 /* ShellModel.swift */; };
 		6268F5BD29CE6375004E3170 /* SwiftShellError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6268F5BC29CE6375004E3170 /* SwiftShellError.swift */; };
-		627EB56029D1277A003B347F /* TestFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 627EB55F29D1277A003B347F /* TestFile.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +26,8 @@
 		6268F5B129CE60E0004E3170 /* SwiftShell.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SwiftShell.entitlements; sourceTree = "<group>"; };
 		6268F5B929CE6117004E3170 /* ShellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShellModel.swift; sourceTree = "<group>"; };
 		6268F5BC29CE6375004E3170 /* SwiftShellError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftShellError.swift; sourceTree = "<group>"; };
-		627EB55F29D1277A003B347F /* TestFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFile.swift; sourceTree = "<group>"; };
+		626A21E429DB57BC00BD3226 /* LoadingSpinner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingSpinner.swift; sourceTree = "<group>"; };
+		627EB55F29D1277A003B347F /* InputTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,7 +108,8 @@
 			isa = PBXGroup;
 			children = (
 				6268F5BC29CE6375004E3170 /* SwiftShellError.swift */,
-				627EB55F29D1277A003B347F /* TestFile.swift */,
+				626A21E429DB57BC00BD3226 /* LoadingSpinner.swift */,
+				627EB55F29D1277A003B347F /* InputTest.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -186,7 +187,6 @@
 				6268F5BA29CE6117004E3170 /* ShellModel.swift in Sources */,
 				6268F5BD29CE6375004E3170 /* SwiftShellError.swift in Sources */,
 				6233F12E29CFDF8000F8F643 /* ShellOutput.swift in Sources */,
-				627EB56029D1277A003B347F /* TestFile.swift in Sources */,
 				6268F5AB29CE60E0004E3170 /* ContentView.swift in Sources */,
 				6268F5A929CE60E0004E3170 /* SwiftShellApp.swift in Sources */,
 			);

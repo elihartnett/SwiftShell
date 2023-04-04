@@ -11,5 +11,5 @@ struct ShellOutput: Identifiable {
     let id = UUID()
     
     let index: Int
-    let output: String
+    var output: String
 }
